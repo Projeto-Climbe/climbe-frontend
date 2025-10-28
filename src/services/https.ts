@@ -1,6 +1,8 @@
-import axios from 'axios'
+// src/services/https.ts
 
-export const http = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000',
-  withCredentials: true,
-})
+import axios from 'axios';
+const https = axios.create({
+  baseURL: 'http://localhost:3000' 
+});
+
+export default https;

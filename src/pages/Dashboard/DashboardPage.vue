@@ -1,5 +1,94 @@
+<script setup lang="ts">
+import { ref, onMounted } from 'vue';
+import https from '@/services/https'; 
+import CartaoEstatistica from '@/components/core/CartaoEstatistica.vue'; 
+import AgendaList from '@/components/core/AgendaList.vue';
+
+interface Contrato {
+  status: string;
+}
+
+interface Reuniao {
+  status: string;
+}
+
+interface Documento {
+  status: string;
+}
+
+interface Proposta {
+  status: string;
+}
+
+const estatisticas = ref({
+  contratos: { ativos: 0, vencendo: 0 },
+  reunioes: { hoje: 0, semana: 0 },
+  documentos: { pendentes: 0, total: 0 },
+  propostas: { pendentes: 0, aprovadas: 0 }
+});
+
+const itemsAgenda = ref([]);
+const nomeUsuario = ref('Usuário'); 
+const loading = ref(true); 
+
+async function buscarDadosDashboard() {
+  loading.value = true;
+  console.log("Iniciando busca de dados do dashboard...");
+
+  try {
+    const [
+      responseContratos,
+      responseReunioes,
+      responseDocumentos,
+      responsePropostas
+    ] = await Promise.all([
+      https.get('/api/contract'),  
+      https.get('/api/reuniao'),  
+      https.get('/api/document'),
+      https.get('/api/proposta')
+    ]);
+
+    console.log("Dados recebidos:", {
+      contratos: responseContratos.data,
+      reunioes: responseReunioes.data,
+      documentos: responseDocumentos.data,
+      propostas: responsePropostas.data,
+    });
+
+    const todosContratos: Contrato[] = responseContratos.data; 
+    estatisticas.value.contratos.ativos = todosContratos.filter(c => c.status === 'ativo').length;
+    estatisticas.value.contratos.vencendo = todosContratos.filter(c => c.status === 'vencendo').length;
+
+    const todasReunioes: Reuniao[] = responseReunioes.data;
+    estatisticas.value.reunioes.hoje = todasReunioes.filter(r => r.status === 'hoje').length; 
+    estatisticas.value.reunioes.semana = todasReunioes.filter(r => r.status === 'semana').length;
+    
+    const todosDocumentos: Documento[] = responseDocumentos.data;
+    estatisticas.value.documentos.pendentes = todosDocumentos.filter(d => d.status === 'pendente').length;
+    estatisticas.value.documentos.total = todosDocumentos.length;
+
+    const todasPropostas: Proposta[] = responsePropostas.data;
+    estatisticas.value.propostas.pendentes = todasPropostas.filter(p => p.status === 'pendente').length;
+    estatisticas.value.propostas.aprovadas = todasPropostas.filter(p => p.status === 'aprovada').length;
+
+  } catch (error) {
+    console.error("Erro ao buscar dados do dashboard:", error);
+  } finally {
+    loading.value = false;
+  }
+}
+
+onMounted(() => {
+  buscarDadosDashboard();
+});
+</script>
+
 <template>
-  <div>
+  <div v-if="loading" class="page-loading">
+    Carregando dados...
+    </div>
+
+  <div class="page" v-else>
     <header class="boasvindas">
       <h1>Olá, {{ nomeUsuario }}!</h1>
       <p class="sub">Aqui está o resumo de hoje.</p>
@@ -7,105 +96,58 @@
 
     <div class="grade">
       <section>
-        <div class="cards">
-          <CartaoEstatistica
-            titulo="Contratos"
-            :valor="estatisticas.contratos.ativos"
-            descricao="ativos"
-            :selo="{ texto: `${estatisticas.contratos.vencendo} Vencendo`, tipo: 'alerta' }"
-            icone="pi pi-file-edit"
-            rota="/contratos"
-          />
-          <CartaoEstatistica
-            titulo="Reuniões"
-            :valor="estatisticas.reunioes.hoje"
-            descricao="Hoje"
-            :selo="{ texto: `${estatisticas.reunioes.semana} Esta semana`, tipo: 'info' }"
-            icone="pi pi-video"
-            rota="/reunioes"
-          />
-          <CartaoEstatistica
-            titulo="Documentos"
-            :valor="estatisticas.documentos.pendentes"
-            descricao="Pendentes de Validação"
-            :selo="{ texto: `${estatisticas.documentos.total} Total`, tipo: 'neutro' }"
-            icone="pi pi-file"
-            rota="/documentos"
-          />
-          <CartaoEstatistica
-            titulo="Propostas"
-            :valor="estatisticas.propostas.pendentes"
-            descricao="Pendentes"
-            :selo="{ texto: `${estatisticas.propostas.aprovadas} Aprovadas`, tipo: 'sucesso' }"
-            icone="pi pi-wallet"
-            rota="/propostas"
-          />
-        </div>
+        <CartaoEstatistica
+          titulo="Contratos"
+          :valor="estatisticas.contratos.ativos"
+          descricao="Ativos"
+          :selo="{ texto: `${estatisticas.contratos.vencendo} vencendo`, tipo: 'alerta' }"
+          icone="pi pi-file-edit"
+          rota="/contratos"
+        />
+        
+        <CartaoEstatistica
+          titulo="Reuniões"
+          :valor="estatisticas.reunioes.hoje"
+          descricao="Hoje"
+          :selo="{ texto: `${estatisticas.reunioes.semana} esta semana`, tipo: 'info' }"
+          icone="pi pi-video"
+          rota="/reunioes"
+        />
+
+        <CartaoEstatistica
+          titulo="Documentos"
+          :valor="estatisticas.documentos.pendentes"
+          descricao="Pendentes de Validação"
+          :selo="{ texto: `${estatisticas.documentos.total} total`, tipo: 'neutro' }"
+          icone="pi pi-file"
+          rota="/documentos"
+        />
+        
+        <CartaoEstatistica
+          titulo="Propostas"
+          :valor="estatisticas.propostas.pendentes"
+          descricao="Pendentes"
+          :selo="{ texto: `${estatisticas.propostas.aprovadas} aprovadas`, tipo: 'sucesso' }"
+          icone="pi pi-wallet"
+          rota="/propostas"
+        />
       </section>
 
       <aside>
-        <ListaAgenda
-          :rotulo-data="rotuloAgenda"
-          :cabecalho-direita="textoDireitaAgenda"
-          :itens="itensAgenda"
+        <AgendaList
+          rotulo-data="Próximos eventos"  cabecalho-direita="Ver todos"
+          :items="itemsAgenda"
         />
       </aside>
     </div>
   </div>
 </template>
 
-<script setup lang="ts">
-  import CartaoEstatistica from '../../components/core/CartaoEstatistica.vue'
-  import ListaAgenda from '../../components/core/AgendaList.vue'
-
-  const nomeUsuario = 'Luiz'
-
-  const estatisticas = {
-    contratos: { ativos: 12, vencendo: 3 },
-    reunioes: { hoje: 3, semana: 7 },
-    documentos: { pendentes: 3, total: 25 },
-    propostas: { pendentes: 5, aprovadas: 8 },
-  }
-
-  const rotuloAgenda = 'Hoje'
-  const textoDireitaAgenda = 'Sexta, 29 de ago.'
-  const itensAgenda = Array(4).fill({
-    titulo: 'Daily Mobile',
-    link: 'https://meet.google.com',
-    inicio: '10:00',
-    fim: '10:30',
-  })
-</script>
-
 <style scoped>
-  .boasvindas h1 {
-    color: #113c36;
-    font-weight: 700;
-    margin: 0;
-  }
-  .sub {
-    color: var(--text-500);
-    margin: 0.25rem 0 0;
-  }
-
-  .grade {
-    display: grid;
-    grid-template-columns: 1fr 360px;
-    gap: 1.25rem;
-    margin-top: 1rem;
-  }
-  .cards {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1rem;
-  }
-
-  @media (max-width: 1200px) {
-    .grade {
-      grid-template-columns: 1fr;
-    }
-    .cards {
-      grid-template-columns: 1fr;
-    }
-  }
+/* Adicione seus estilos aqui... */
+.page-loading {
+  padding: 2rem;
+  text-align: center;
+  font-size: 1.2rem;
+}
 </style>
