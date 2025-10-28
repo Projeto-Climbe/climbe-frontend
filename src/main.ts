@@ -1,4 +1,7 @@
-import './assets/main.css'
+import '@coreui/coreui/dist/css/coreui.min.css'
+import 'bootstrap-icons/font/bootstrap-icons.css'
+import './assets/theme.css'
+import './assets/fixes.css'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
