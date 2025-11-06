@@ -1,0 +1,7 @@
+html, body, #app { width: 100%; }
+
+.container, .container-fluid {
+  max-width: 1200px !important;
+}
+
+body { overflow: hidden; }

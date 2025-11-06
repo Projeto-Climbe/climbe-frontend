@@ -20,7 +20,7 @@
     margin-bottom: 0.5rem;
   }
   .titulo {
-    color: var(--teal-800);
+    color: var(--cl-accent);
     margin: 0;
     font-weight: 600;
   }
