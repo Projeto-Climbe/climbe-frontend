@@ -37,7 +37,7 @@
   import CampoFormulario from '../../core/CampoFormulario.vue'
   import DialogoFormulario from '../../core/DialogFormulario.vue'
   import { z } from 'zod'
-  import { useValidadorZod } from '../../composables/userValidateZod'
+  import { useValidadorZod } from '../../../composables/userValidateZod'
 
   const props = defineProps<{ modelValue: boolean }>()
   const emit = defineEmits(['update:modelValue', 'enviar', 'voltar'])
