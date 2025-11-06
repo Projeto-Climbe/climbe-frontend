@@ -63,13 +63,11 @@ import ModalCargo from '../../components/domain/cargos/ModalCargos.vue';
 
 import { useCompanies } from '../../composables/useCompanies';
 
-// Suas interfaces
 interface Contrato { status: string; }
 interface Reuniao { status: string; }
 interface Documento { status: string; }
 interface Proposta { status: string; }
 
-// --- ESTADO DO DASHBOARD ---
 const estatisticas = ref({
 contratos: { ativos: 0, vencendo: 0 },
 reunioes: { hoje: 0, semana: 0 },
@@ -79,9 +77,8 @@ propostas: { pendentes: 0, aprovadas: 0 }
 
 const itemsAgenda = ref([]); 
 const nomeUsuario = ref('Usuário');
-const loading = ref(true); // Loading geral da página
+const loading = ref(true); 
 
-// Função para buscar dados gerais do dashboard
 async function buscarDadosDashboard() {
 loading.value = true;
 console.log("Iniciando busca de dados do dashboard...");
@@ -98,22 +95,18 @@ https.get('/api/document'),
 https.get('/api/proposta')
 ]);
 
-    // ... (lógica para processar estatísticas) ...
 
 } catch (error) {
 console.error("Erro ao buscar dados do dashboard:", error);
 } finally {
-loading.value = false; // Termina o loading geral
+loading.value = false; 
 }
 }
 
-// --- ESTADO DAS SEÇÕES (PESSOAS, EMPRESAS, CARGOS) ---
 
-// Carregamento específico (o de empresas não é mais usado)
 const carregando = ref({ pessoas: false, empresas: false }); 
 const modais = ref({ empresa: false, usuario: false, cargo: false }); 
 
-// --- Seção Pessoas (ainda mockado) ---
 const pessoas = ref([{ nome: 'Jubileu do creio', email: 'omg...@gmail.com', status: 'Pendente' }]);
 const colunasPessoas = [
 { campo: 'nome', titulo: 'Nome' },
@@ -122,11 +115,10 @@ const colunasPessoas = [
 { titulo: '', tipo: 'pendentesAcoes' },
 ];
 
-// --- Seção Empresas (AGORA VEM DO COMPOSABLE) ---
 const { 
-    companies: empresas,           // Renomeado para 'empresas'
-    loading: carregandoEmpresas, // Renomeado para 'carregandoEmpresas'
-    error: erroEmpresas,         // Renomeado para 'erroEmpresas'
+    companies: empresas,          
+    loading: carregandoEmpresas,
+    error: erroEmpresas,         
     fetchCompanies 
 } = useCompanies();
 
@@ -137,16 +129,13 @@ const colunasEmpresas = [
 { campo: 'telefone', titulo: 'Telefone' },
 ];
 
-// --- Seção Funções/Cargos (ainda mockado) ---
 const funcoes = ref([
 { id: '1', nome: 'Analista', permissoes: ['Criar proposta', 'Validar documento'] },
 ]);
 
-// --- ON MOUNTED ---
 onMounted(() => {
 buscarDadosDashboard(); 
 fetchCompanies();       
-  // (Quando tiver o de pessoas, chame aqui também)
 });
 
 function aprovar(_row: any) { console.log("Aprovar:", _row); }
@@ -154,7 +143,6 @@ function rejeitar(_row: any) { console.log("Rejeitar:", _row); }
 function criarEmpresa(_payload: any) {
 modais.value.empresa = false;
 console.log("Empresa criada:", _payload);
-  // IDEALMENTE: Chamar fetchCompanies() aqui para atualizar a lista
 }
 function criarUsuario(_payload: any) {
 modais.value.usuario = false;
