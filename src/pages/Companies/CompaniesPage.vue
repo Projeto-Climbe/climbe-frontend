@@ -1,157 +1,101 @@
 <template>
-<div class="pagina-dashboard-layout">
-    <div v-if="loading" class="page-loading">
-Carregando dados do dashboard...
-</div>
+  <section class="card-soft dashboard-section mt-4">
+    <div class="section-header-row">
+      <CabecalhoSecao :titulo="'Empresas'" :subtitulo="`Total ${empresas.length}`" />
+      <Button label="Adicionar nova empresa" class="btn-primaria" @click="modais.empresa = true" />
+    </div>
 
-<div v-else>
-      <section class="card-soft dashboard-section">
-<CabecalhoSecao titulo="Pessoas" subtitulo="Pendentes de autorização">
-<template #acoes>
-<Button label="Adicionar usuário" class="btn-primaria" @click="modais.usuario = true" />
-</template>
-</CabecalhoSecao>
-<TabelaDados
-:valor="pessoas"
-:carregando="carregando.pessoas"
-:colunas="colunasPessoas"
-@aprovar="aprovar"
-@rejeitar="rejeitar"
-/>
-</section>
+    <div
+      v-if="erroEmpresas"
+      style="color: red; margin: 10px 0; padding: 10px; border: 1px solid red; border-radius: 4px;"
+    >
+      <strong>Erro:</strong> {{ erroEmpresas }}
+    </div>
 
-      <section class="card-soft dashboard-section mt-4">
-<div class="section-header-row">
-          <CabecalhoSecao :titulo="'Empresas'" :subtitulo="`Total ${empresas.length}`" />
-<Button label="Adicionar nova empresa" class="btn-primaria" @click="modais.empresa = true" />
-</div>
+    <TabelaDados 
+      :valor="empresas" 
+      :carregando="carregandoEmpresas" 
+      :colunas="colunasEmpresas" 
+    />
+    
+    </section>
 
-        <div v-if="erroEmpresas" style="color: red; margin: 10px 0; padding: 10px; border: 1px solid red; border-radius: 4px;">
-          <strong>Erro ao carregar empresas:</strong> {{ erroEmpresas }}
-        </div>
-
-        <TabelaDados 
-          :valor="empresas" 
-          :carregando="carregandoEmpresas" 
-          :colunas="colunasEmpresas" 
-        />
-</section>
-
-      <section class="card-soft dashboard-section mt-4">
-<PainelPermissoes :funcoes="funcoes" @adicionar="modais.cargo = true" />
-</section>
-
-      <ModalEmpresa v-model="modais.empresa" @enviar="criarEmpresa" />
-<ModalUsuario v-model="modais.usuario" @enviar="criarUsuario" @voltar="modais.usuario = false" />
-<ModalCargo v-model="modais.cargo" @enviar="criarCargo" @voltar="modais.cargo = false" />
-</div>
-</div>
-</template>
+  </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import https from '@/services/https';
-import Button from 'primevue/button'; 
+import { ref, onMounted } from 'vue'
+import Button from 'primevue/button' 
 
-// Seus imports de componentes
 import CabecalhoSecao from '../../components/core/SectionHeader.vue';
-import TabelaDados from '../../components/core/TabelaDeDados.vue';
-import PainelPermissoes from '../../components/domain/cargos/PainelPermissoes.vue';
-import ModalEmpresa from '../../components/domain/empresas/ModalEmpresas.vue';
-import ModalUsuario from '../../components/domain/usuarios/ModalUsuario.vue';
-import ModalCargo from '../../components/domain/cargos/ModalCargos.vue';
-
-import { useCompanies } from '../../composables/useCompanies';
-
 interface Contrato { status: string; }
-interface Reuniao { status: string; }
-interface Documento { status: string; }
-interface Proposta { status: string; }
 
-const estatisticas = ref({
-contratos: { ativos: 0, vencendo: 0 },
-reunioes: { hoje: 0, semana: 0 },
-documentos: { pendentes: 0, total: 0 },
-propostas: { pendentes: 0, aprovadas: 0 }
-});
+const loading = ref(true)
 
-const itemsAgenda = ref([]); 
-const nomeUsuario = ref('Usuário');
-const loading = ref(true); 
+const carregando = ref({ pessoas: false, empresas: false })
+const modais = ref({ empresa: false, usuario: false, cargo: false })
 
-async function buscarDadosDashboard() {
-loading.value = true;
-console.log("Iniciando busca de dados do dashboard...");
-try {
-const [
-responseContratos,
-responseReunioes,
-responseDocumentos,
-responsePropostas
-] = await Promise.all([
-https.get('/api/contract'),
-https.get('/api/reuniao'),
-https.get('/api/document'),
-https.get('/api/proposta')
+const pessoas = ref<any[]>([
+  { nome: 'Ana Silva', email: 'ana.silva@email.com', status: 'Pendente' },
+  { nome: 'Bruno Costa', email: 'bruno.costa@email.com', status: 'Pendente' },
 ]);
 
+const colunasPessoas = ref([
+ { campo: 'nome', titulo: 'Nome' },
+ { campo: 'email', titulo: 'E-mail' },
+ { campo: 'status', titulo: 'Status' },
+])
 
-} catch (error) {
-console.error("Erro ao buscar dados do dashboard:", error);
-} finally {
-loading.value = false; 
+const empresas = ref<any[]>([]);
+const carregandoEmpresas = ref(false);
+const erroEmpresas = ref<string | null>(null); 
+const salvandoEmpresa = ref(false); 
+
+function mockFetchCompanies() {
+  carregandoEmpresas.value = true;
+  setTimeout(() => {
+    empresas.value = [
+      { id: '1', nomeFantasia: 'Tech Solutions', email: 'contato@tech.com', cnpj: '11.222.333/0001-44', telefone: '(11) 99999-1111' },
+      { id: '2', nomeFantasia: 'Coffee House', email: 'cafe@coffee.com', cnpj: '44.555.666/0001-77', telefone: '(22) 98888-2222' },
+      { id: '3', nomeFantasia: 'Alpha Logistics', email: 'log@alpha.com', cnpj: '77.888.999/0001-00', telefone: '(33) 97777-3333' },
+    ];
+    carregandoEmpresas.value = false;
+  }, 1000);
 }
-}
-
-
-const carregando = ref({ pessoas: false, empresas: false }); 
-const modais = ref({ empresa: false, usuario: false, cargo: false }); 
-
-const pessoas = ref([{ nome: 'Jubileu do creio', email: 'omg...@gmail.com', status: 'Pendente' }]);
-const colunasPessoas = [
-{ campo: 'nome', titulo: 'Nome' },
-{ campo: 'email', titulo: 'Email' },
-{ campo: 'status', titulo: 'Status', tipo: 'status' },
-{ titulo: '', tipo: 'pendentesAcoes' },
-];
-
-const { 
-    companies: empresas,          
-    loading: carregandoEmpresas,
-    error: erroEmpresas,         
-    fetchCompanies 
-} = useCompanies();
 
 const colunasEmpresas = [
 { campo: 'nomeFantasia', titulo: 'Nome fantasia' },
 { campo: 'email', titulo: 'Email' },
-{ campo: 'cnpj', titulo: 'Cnpj' },
+{ campo: 'cnpj', titulo: 'CNPJ' },
 { campo: 'telefone', titulo: 'Telefone' },
-];
+]
 
-const funcoes = ref([
-{ id: '1', nome: 'Analista', permissoes: ['Criar proposta', 'Validar documento'] },
-]);
+const funcoes = ref<any[]>([])
+
+async function buscarDadosDashboard() {
+  loading.value = false
+}
 
 onMounted(() => {
-buscarDadosDashboard(); 
-fetchCompanies();       
-});
+ buscarDadosDashboard()
+ mockFetchCompanies() 
+})
 
-function aprovar(_row: any) { console.log("Aprovar:", _row); }
-function rejeitar(_row: any) { console.log("Rejeitar:", _row); }
-function criarEmpresa(_payload: any) {
-modais.value.empresa = false;
-console.log("Empresa criada:", _payload);
+async function criarEmpresa(payload: any) { 
+  console.log('Tentando criar empresa:', payload)
+  salvandoEmpresa.value = true;
+
+  setTimeout(() => {
+    empresas.value.push({
+      id: String(Math.random()), 
+      ...payload
+    });
+
+    salvandoEmpresa.value = false;
+    modais.value.empresa = false;
+    console.log('Empresa criada com sucesso!');
+  }, 1500); 
 }
-function criarUsuario(_payload: any) {
-modais.value.usuario = false;
-console.log("Usuário criado:", _payload);
-}
-function criarCargo(_payload: any) {
-modais.value.cargo = false;
-console.log("Cargo criado:", _payload);
-}
+
 </script>
 
 <style scoped>
@@ -161,5 +105,4 @@ console.log("Cargo criado:", _payload);
 }
 .mt-4 {
   margin-top: 1rem; 
-}
-</style>
+}</style>
