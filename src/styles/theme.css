@@ -1,97 +1,47 @@
 :root {
-  --mint-50: #f3fdfa;
-  --mint-100: #d4f3eb;
-  --mint-200: #a8e3d2;
-  --mint-500: #57c6aa;
-  --mint-700: #1a8a76;
-  --teal-800: #13665b;
-  --ink-900: #1b1d1f;
+  /* Cores de fundo */
+  --climb-bg: #f4faf6;
+  --climb-card-bg: #f6fbf7;
+  --climb-sidebar-bg: #f2f6f3;
 
-  --border-color-light: rgba(150, 200, 190, 0.3);
-  --border-color-dark: rgba(47, 127, 115, 0.5);
-  --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.05);
-  --shadow-hover: 0 6px 16px rgba(0, 0, 0, 0.12);
-  --radius-xxl: 1rem;
-  --radius-button: 999px;
+  /* Cores principais */
+  --climb-green-900: #123b2d;
+  --climb-green-700: #1b7a5a;
+  --climb-green-500: #2ca47a;
+
+  /* Cores auxiliares */
+  --climb-muted: #7a8d82;
+  --climb-border-subtle: rgba(0, 0, 0, 0.04);
+
+  --climb-pill-red-bg: #ffe2e0;
+  --climb-pill-red-text: #b05454;
+
+  --climb-pill-blue-bg: #e0ebff;
+  --climb-pill-blue-text: #3b6ece;
+
+  --climb-pill-green-bg: #d8f1e3;
+  --climb-pill-green-text: #2f8b5e;
+
+  /* Outros */
+  --climb-radius-card: 24px;
+  --climb-shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.08);
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'SF Pro Text',
+    'Segoe UI',
+    sans-serif;
+  background-color: var(--climb-bg);
+  color: var(--climb-green-900);
 }
 
 body {
-  margin: 0;
-  background-color: var(--mint-50);
-  color: var(--ink-900);
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  line-height: 1.5;
-}
-
-.dashboard-container {
-  padding: 1.5rem;
-  background-color: var(--mint-50);
-  min-height: 100vh;
-}
-
-.dashboard-section {
-  background-color: #fff;
-  border-radius: var(--radius-xxl);
-  box-shadow: var(--shadow-soft);
-  padding: 1.5rem;
-  margin-bottom: 1.5rem;
-  transition: box-shadow 0.2s ease;
-}
-
-.dashboard-section:hover {
-  box-shadow: var(--shadow-hover);
-}
-
-.section-header-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-
-.btn-primaria {
-  background: var(--mint-500) !important;
-  border: none;
-  color: var(--teal-800);
-  border-radius: var(--radius-button);
-  padding: 0.6rem 1.2rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-}
-
-.btn-primaria:hover {
-  background: var(--teal-800) !important;
-  color: var(--mint-50);
-  box-shadow: var(--shadow-hover);
-  transform: translateY(-2px);
-}
-
-.tabela-dados table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.tabela-dados th,
-.tabela-dados td {
-  padding: 0.8rem 1rem;
-  text-align: left;
-  border-bottom: 1px solid var(--border-color-light);
-  color: var(--ink-900);
-}
-
-.tabela-dados th {
-  background-color: var(--mint-100);
-  font-weight: 600;
-  color: var(--teal-800);
-}
-
-.tabela-dados tbody tr:hover {
-  background-color: var(--mint-200);
-  transition: background-color 0.2s;
-}
-
-.mt-4 {
-  margin-top: 1.5rem;
+  -webkit-font-smoothing: antialiased;
 }

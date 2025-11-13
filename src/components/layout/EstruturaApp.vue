@@ -1,32 +1,43 @@
 <template>
-  <div class="estrutura">
-    <aside class="lateral"><BarraLateral /></aside>
-    <main class="conteudo"><slot /></main>
+  <div class="dashboard-shell">
+    <ClimbSidebar
+      class="dashboard-shell__sidebar"
+      active-item="overview"
+    />
+
+    <main class="dashboard-shell__main">
+      <div class="dashboard-shell__content">
+        <slot />
+      </div>
+    </main>
   </div>
 </template>
 
 <script setup lang="ts">
-  import BarraLateral from '../layout/Sidebar.vue'
+import ClimbSidebar from "@/components/layout/Sidebar.vue";
 </script>
 
 <style scoped>
-  .estrutura {
-    display: grid;
-    grid-template-columns: 260px 1fr;
-    min-height: 100dvh;
-  }
-  .lateral {
-    background: #f0f6f3;
-    padding: 1rem;
-    border-right: 1px solid #e6f0ec;
-  }
-  .conteudo {
-    padding: 1.25rem 1.25rem 2rem;
-  }
+.dashboard-shell {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--climb-bg);
+}
 
-  @media (max-width: 1200px) {
-    .estrutura {
-      grid-template-columns: 80px 1fr;
-    }
-  }
+/* Sidebar fixa à esquerda */
+.dashboard-shell__sidebar {
+  flex: 0 0 240px;
+}
+
+/* Conteúdo principal */
+.dashboard-shell__main {
+  flex: 1;
+  padding: 32px 48px;
+}
+
+/* Wrapper para alinhar com o Figma (espaço entre sidebar e cards) */
+.dashboard-shell__content {
+  max-width: 1120px;
+  margin: 0 auto;
+}
 </style>
