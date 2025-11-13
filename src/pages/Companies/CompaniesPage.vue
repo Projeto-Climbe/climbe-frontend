@@ -44,8 +44,8 @@ const loading = ref(false)
 
 const companiesMock = ref([
   { id: '1', nomeFantasia: 'Tech Solutions', email: 'contato@tech.com', cnpj: '11.222.333/0001-44', telefone: '(11) 99999-1111' },
-  { id: '2', nomeFantasia: 'Coffee House', email: 'cafe@coffee.com', cnpj: '44.555.666/0001-77', telefone: '(22) 98888-2222' },
-  { id: '3', nomeFantasia: 'Alpha Logistics', email: 'log@alpha.com', cnpj: '77.888.999/0001-00', telefone: '(33) 97777-3333' },
+  { id: '2', nomeFantasia: 'FILA DA FRUTA', email: 'abu@ABUABU.com', cnpj: '44.555.666/0001-77', telefone: '(22) 98888-2222' },
+  { id: '3', nomeFantasia: 'Alpha concursoco', email: 'Evandro@guedes.com', cnpj: '15.794.426/0001-31', telefone: '(45) 99122-3187,' },
 ])
 
 const colunasEmpresas = [
