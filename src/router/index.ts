@@ -4,6 +4,7 @@ const PaginaDashboard = () => import('../pages/Dashboard/DashboardPage.vue')
 const PaginaEmpresas = () => import('../pages/Companies/CompaniesPage.vue')
 const PaginaReunioes = () => import('../pages/Reunioes/ReunioesPage.vue')
 
+
 export default createRouter({
   history: createWebHistory(),
   routes: [
