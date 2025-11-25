@@ -1,8 +1,6 @@
 <template>
   <aside class="sidebar">
-    <!-- Bloco superior: logo + menu -->
     <div>
-      <!-- Logo Climbe -->
       <div class="sidebar__logo">
         <div class="sidebar__logo-mark">
           <span class="sidebar__logo-text-main">climb.</span>
@@ -10,7 +8,6 @@
         </div>
       </div>
 
-      <!-- Navegação -->
       <nav class="sidebar__nav">
         <ul class="sidebar__list">
           <li
@@ -27,7 +24,7 @@
                 {{ item.label }}
               </span>
 
-              <span v-if="item.badge !== undefined" class="sidebar__badge">
+              <span v-if="item.badge" class="sidebar__badge">
                 {{ item.badge }}
               </span>
             </button>
@@ -36,7 +33,6 @@
       </nav>
     </div>
 
-    <!-- Bloco inferior: usuário -->
     <footer class="sidebar__footer">
       <div class="sidebar__user">
         <div class="sidebar__avatar">
@@ -63,29 +59,23 @@
 
   const router = useRouter()
   const route = useRoute()
+
   const items: SidebarItem[] = [
-    { id: 'overview', label: 'Visão geral', icon: 'pi-compass', to: '/dashboard' },
+    { id: 'overview', label: 'Visão geral', icon: 'pi-objects-column', to: '/dashboard' },
     { id: 'contracts', label: 'Contratos', icon: 'pi-file', badge: 3, to: '/contratos' },
-    { id: 'companies', label: 'Empresas', icon: 'pi-building', to: '/companies' },
+    { id: 'companies', label: 'Empresas', icon: 'pi-briefcase', to: '/empresas' },
     { id: 'reminders', label: 'Lembretes', icon: 'pi-bell', to: '/lembretes' },
-    { id: 'meetings', label: 'Reuniões', icon: 'pi-calendar', to: '/reunioes' },
+    { id: 'meetings', label: 'Reuniões', icon: 'pi-video', to: '/reunioes' },
     { id: 'settings', label: 'Ajustes', icon: 'pi-cog', to: '/ajustes' },
   ]
 
   function handleClick(item: SidebarItem) {
-    if (!item.to || route.path === item.to) return
+    if (!item.to) return
     router.push(item.to)
   }
-  
+
   function isActive(item: SidebarItem) {
-    if (item.to) {
-      return route.path === item.to
-    }
-
-    if (item.id === 'overview') {
-      return route.name === 'dashboard' || route.path === '/'
-    }
-
+    if (item.to) return route.path.startsWith(item.to)
     return false
   }
 </script>
@@ -96,131 +86,121 @@
     flex-direction: column;
     justify-content: space-between;
     height: 100vh;
-    width: 240px;
-    padding: 24px 20px;
-    background-color: #f2f6f3; /* mesmo feel do Figma */
-    box-shadow: 10px 0 35px rgba(15, 23, 42, 0.04);
+    width: 260px;
+    padding: 32px 24px;
+    background-color: var(--climb-sidebar-bg);
+    border-right: 1px solid rgba(0, 0, 0, 0.03);
   }
 
   /* Logo */
-  .sidebar__logo {
-    margin-bottom: 24px;
-  }
-
   .sidebar__logo-mark {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 2px;
   }
-
   .sidebar__logo-text-main {
     font-weight: 800;
-    font-size: 24px;
-    letter-spacing: 0.01em;
-    color: #1b7a5a;
+    font-size: 26px;
+    color: var(--climb-green-900);
+    letter-spacing: -0.5px;
   }
-
   .sidebar__logo-text-sub {
-    font-size: 10px;
-    color: #7a8d82;
+    font-size: 11px;
+    color: var(--climb-muted);
+    font-weight: 500;
   }
 
-  /* Menu */
+  /* Nav */
   .sidebar__nav {
-    margin-top: 24px;
+    margin-top: 40px;
   }
-
   .sidebar__list {
     list-style: none;
     padding: 0;
     margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
   }
 
-  .sidebar__item + .sidebar__item {
-    margin-top: 6px;
+  .sidebar__item {
+    position: relative;
   }
 
   .sidebar__link {
     width: 100%;
     border: none;
-    outline: none;
     background: transparent;
-    padding: 10px 12px;
-    border-radius: 999px;
+    padding: 12px 16px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     cursor: pointer;
-    color: #123b2d;
+    color: #586961;
     font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s;
   }
 
-  /* Estado ativo (igual Figma: pill verde clara) */
+  .sidebar__link:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+    color: var(--climb-green-900);
+  }
+
   .sidebar__item--active .sidebar__link {
-    background-color: #e0f2eb;
-    color: #1b7a5a;
+    background-color: transparent;
+    color: var(--climb-green-900);
+    font-weight: 700;
   }
 
-  /* Ícone */
+  .sidebar__item--active::before {
+    content: '';
+    position: absolute;
+    left: -24px;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 24px;
+    width: 4px;
+    background-color: var(--climb-green-700);
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+  }
+
   .sidebar__icon-wrap {
-    width: 24px;
-    display: flex;
-    justify-content: center;
+    font-size: 18px;
   }
 
-  .sidebar__label {
-    flex: 1;
-    text-align: left;
-  }
-
-  /* Badge vermelho dos contratos */
   .sidebar__badge {
-    min-width: 20px;
-    padding: 2px 8px;
-    border-radius: 999px;
-    font-size: 11px;
     background-color: #ffe2e0;
     color: #b05454;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 99px;
+    margin-left: auto;
   }
 
-  /* Rodapé / Usuário */
-  .sidebar__footer {
-    margin-top: 32px;
-  }
-
+  /* User Footer */
   .sidebar__user {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 10px 14px;
-    border-radius: 999px;
-    background-color: #e3f2ec;
+    gap: 12px;
   }
-
   .sidebar__avatar {
-    width: 28px;
-    height: 28px;
-    border-radius: 999px;
-    border: 2px solid #1b7a5a;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--climb-green-700);
     display: flex;
     align-items: center;
     justify-content: center;
+    color: var(--climb-green-700);
+    font-weight: 700;
   }
-
-  .sidebar__avatar-initial {
-    font-size: 13px;
-    font-weight: 600;
-    color: #1b7a5a;
-  }
-
-  .sidebar__user-info {
-    display: flex;
-    flex-direction: column;
-  }
-
   .sidebar__user-name {
-    font-size: 13px;
-    font-weight: 500;
-    color: #123b2d;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--climb-green-900);
   }
 </style>

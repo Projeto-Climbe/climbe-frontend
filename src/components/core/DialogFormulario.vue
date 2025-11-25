@@ -3,32 +3,34 @@
     v-model:visible="visivel"
     :modal="true"
     :dismissable-mask="true"
+    :closable="false"
     :style="{ width: largura }"
     :pt="{ mask: { class: 'backdrop-blur-sm' } }"
   >
     <template #header>
       <div class="cab">
         <h3 class="titulo">{{ titulo }}</h3>
-        <Button icon="pi pi-times" text rounded aria-label="Fechar" @click="fechar" />
+        <button type="button" class="btn-fechar" @click="fechar">
+          <i class="pi pi-times"></i>
+        </button>
       </div>
     </template>
 
-    <slot />
+    <div class="conteudo-modal">
+      <slot />
+    </div>
 
     <template #footer>
       <div class="rodape">
-        <Button
-          v-if="mostrarVoltar"
-          label="Voltar"
-          outlined
-          class="rounded-2xl"
-          @click="$emit('voltar')"
-        />
-        <Button
-          :label="rotuloPrimario"
-          class="rounded-2xl btn-primaria"
-          @click="$emit('primario')"
-        />
+        <slot name="footer-actions">
+          <Button
+            v-if="mostrarVoltar"
+            :label="rotuloVoltar || 'Voltar'"
+            class="btn-voltar"
+            @click="$emit('voltar')"
+          />
+          <Button :label="rotuloPrimario" class="btn-primaria" @click="$emit('primario')" />
+        </slot>
       </div>
     </template>
   </Dialog>
@@ -36,6 +38,8 @@
 
 <script setup lang="ts">
   import { computed } from 'vue'
+  import Button from 'primevue/button'
+  import Dialog from 'primevue/dialog'
 
   const props = withDefaults(
     defineProps<{
@@ -43,11 +47,13 @@
       titulo: string
       largura?: string
       rotuloPrimario?: string
+      rotuloVoltar?: string
       mostrarVoltar?: boolean
     }>(),
     {
-      largura: '760px',
+      largura: '500px',
       rotuloPrimario: 'Salvar',
+      mostrarVoltar: false,
     },
   )
 
@@ -70,14 +76,39 @@
     justify-content: space-between;
     width: 100%;
   }
+
   .titulo {
-    color: var(--teal-800);
-    font-weight: 600;
+    color: #123b2d;
+    font-weight: 700;
+    font-size: 1.25rem;
     margin: 0;
   }
+
+  .btn-fechar {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #9ca3af;
+    font-size: 1.1rem;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+  }
+
+  .btn-fechar:hover {
+    color: #123b2d;
+  }
+
+  .conteudo-modal {
+    padding: 0.5rem 0;
+  }
+
   .rodape {
     display: flex;
-    gap: 0.75rem;
+    gap: 1rem;
     justify-content: flex-end;
+    width: 100%;
   }
 </style>

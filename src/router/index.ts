@@ -5,6 +5,7 @@ const PaginaEmpresas = () => import('../pages/Companies/CompaniesPage.vue')
 const PaginaReunioes = () => import('../pages/Reunioes/ReunioesPage.vue')
 const PaginaLembretes = () => import('../pages/Lembretes/LembretesPage.vue')
 const PaginaContratos = () => import('../pages/Contratos/ContratosPage.vue')
+const PaginaVazia = { render: () => null }
 
 
 export default createRouter({
@@ -16,6 +17,8 @@ export default createRouter({
     { path: '/contratos', name: 'contratos', component: PaginaContratos },
     { path: '/reunioes', name: 'reunioes', component: PaginaReunioes },
     { path: '/lembretes', name: 'lembretes', component: PaginaLembretes },
-    { path: '/ajustes', component: { template: '<div />' } }
+    { path: '/documentos', name: 'documentos', component: PaginaVazia },
+    { path: '/ajustes', component: PaginaVazia },
+    { path: '/companies', redirect: '/empresas' }
   ]
 })
