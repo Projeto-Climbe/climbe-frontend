@@ -1,22 +1,18 @@
 <template>
   <Teleport to="body">
     <transition name="dialog-fade">
-      <div
-        v-if="modelValue"
-        class="card-dialog__backdrop"
-        @click.self="handleClose"
-      >
+      <div v-if="modelValue" class="card-dialog__backdrop" @click.self="handleClose">
         <div class="card-dialog">
           <header class="card-dialog__header">
             <h2 class="card-dialog__title">{{ title }}</h2>
-            <p class="card-dialog__subtitle">
+            <p v-if="subtitle" class="card-dialog__subtitle">
               {{ subtitle }}
             </p>
           </header>
 
           <section class="card-dialog__body">
             <slot>
-              <p class="card-dialog__description">
+              <p v-if="description" class="card-dialog__description">
                 {{ description }}
               </p>
             </slot>
@@ -50,6 +46,7 @@ import { useRouter } from "vue-router";
 
 const props = withDefaults(
   defineProps<{
+    modelValue: boolean;
     title: string;
     subtitle?: string;
     description?: string;
@@ -64,21 +61,21 @@ const props = withDefaults(
   }
 );
 
-const modelValue = defineModel<boolean>({
-  required: true,
-});
+const emit = defineEmits<{
+  (e: "update:modelValue", value: boolean): void;
+}>();
 
 const router = useRouter();
 
 function handleClose() {
-  modelValue.value = false;
+  emit("update:modelValue", false);
 }
 
 function handlePrimary() {
   if (props.routeTo) {
     router.push(props.routeTo);
   }
-  modelValue.value = false;
+  emit("update:modelValue", false);
 }
 </script>
 
@@ -86,7 +83,7 @@ function handlePrimary() {
 .card-dialog__backdrop {
   position: fixed;
   inset: 0;
-  background-color: rgba(15, 23, 42, 0.40);
+  background-color: rgba(15, 23, 42, 0.35);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -96,15 +93,16 @@ function handlePrimary() {
 .card-dialog {
   width: 420px;
   max-width: 90vw;
-  border-radius: 24px;
+  border-radius: 28px;
   background-color: #ffffff;
   box-shadow: 0 30px 80px rgba(15, 23, 42, 0.45);
-  padding: 24px 26px 20px;
+  padding: 26px 26px 20px;
   display: flex;
   flex-direction: column;
   gap: 18px;
 }
 
+/* Cabeçalho do modal */
 .card-dialog__header {
   display: flex;
   flex-direction: column;
@@ -124,6 +122,7 @@ function handlePrimary() {
   color: var(--climb-muted);
 }
 
+/* Corpo (texto ou slot custom) */
 .card-dialog__body {
   font-size: 14px;
   color: #33413a;
@@ -131,11 +130,12 @@ function handlePrimary() {
 
 .card-dialog__description {
   margin: 0;
-  line-height: 1.4;
+  line-height: 1.5;
 }
 
+/* Rodapé com ações */
 .card-dialog__footer {
-  margin-top: 8px;
+  margin-top: 6px;
   display: flex;
   justify-content: flex-end;
   gap: 10px;
@@ -148,12 +148,15 @@ function handlePrimary() {
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .card-dialog__btn--primary {
   background-color: var(--climb-green-700);
-  color: #ffffff;
   border-color: var(--climb-green-700);
+  color: #ffffff;
 }
 
 .card-dialog__btn--primary:hover {
@@ -170,10 +173,11 @@ function handlePrimary() {
   background-color: rgba(0, 0, 0, 0.02);
 }
 
-/* animação simples */
 .dialog-fade-enter-active,
 .dialog-fade-leave-active {
-  transition: opacity 0.18s ease, transform 0.18s ease;
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease;
 }
 
 .dialog-fade-enter-from,
@@ -182,3 +186,4 @@ function handlePrimary() {
   transform: translateY(6px);
 }
 </style>
+

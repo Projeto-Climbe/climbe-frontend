@@ -89,17 +89,34 @@ function handleOpen() {
   background-color: var(--climb-card-bg);
   border-radius: var(--climb-radius-card);
   box-shadow: var(--climb-shadow-soft);
-  padding: 20px 24px;
+  padding: 20px 22px;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 16px;
   cursor: pointer;
+  transition:
+    transform 0.16s ease,
+    box-shadow 0.16s ease,
+    background-color 0.16s ease;
+}
+
+/* variação de tamanho, batendo com o grid */
+.summary-card--large {
+  min-height: 150px;
 }
 
 .summary-card--small {
-  padding-block: 18px;
+  min-height: 130px;
 }
 
+/* hover leve, sem desconfigurar */
+.summary-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+  background-color: #f9fdfb;
+}
+
+/* header: título + chevron */
 .summary-card__header {
   display: flex;
   align-items: center;
@@ -107,18 +124,19 @@ function handleOpen() {
 }
 
 .summary-card__title {
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--climb-green-700);
   margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--climb-green-700);
 }
 
 .summary-card__chevron {
   border: none;
   background: transparent;
   border-radius: 999px;
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -130,6 +148,7 @@ function handleOpen() {
   color: var(--climb-muted);
 }
 
+/* corpo: texto à esquerda + ícone à direita */
 .summary-card__body {
   display: flex;
   align-items: center;
@@ -140,48 +159,51 @@ function handleOpen() {
 .summary-card__info {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .summary-card__value-row {
   display: flex;
   align-items: baseline;
-  gap: 10px;
+  gap: 8px;
 }
 
 .summary-card__value {
-  font-size: 36px;
+  margin: 0;
+  font-size: 32px;
+  line-height: 1;
   font-weight: 700;
   color: var(--climb-green-900);
 }
 
 .summary-card__value-label {
-  font-size: 14px;
+  font-size: 13px;
   color: var(--climb-muted);
 }
 
+/* badge (pill) na parte de baixo do card */
 .summary-card__badge {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 6px 12px;
+  gap: 6px;
+  padding: 4px 10px;
   border-radius: 999px;
-  font-size: 12px;
-}
-
-.summary-card__badge-dot {
-  width: 14px;
-  height: 14px;
-  border-radius: 999px;
-  background-color: currentColor;
-  opacity: 0.9;
-}
-
-.summary-card__badge-text {
+  font-size: 11px;
   font-weight: 500;
 }
 
-/* Variações de cor das badges */
+.summary-card__badge-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background-color: currentColor;
+}
+
+.summary-card__badge-text {
+  white-space: nowrap;
+}
+
+/* variações de cor da badge usando seus tokens */
 .summary-card__badge--danger {
   background-color: var(--climb-pill-red-bg);
   color: var(--climb-pill-red-text);
@@ -197,9 +219,11 @@ function handleOpen() {
   color: var(--climb-pill-green-text);
 }
 
+/* ícone à direita: deixamos o slot “livre”, sem moldura extra */
 .summary-card__icon {
-  font-size: 64px;
-  color: #2b3b33;
-  opacity: 0.9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* o tamanho visual vem do componente de ícone (Ph*) */
 }
 </style>

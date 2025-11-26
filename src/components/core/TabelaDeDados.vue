@@ -1,9 +1,9 @@
 <template>
   <div class="table-container">
     <div v-if="carregando" class="loading-overlay">
-      <i class="pi pi-spin pi-spinner" style="font-size: 2rem;"></i> Carregando...
+      <i class="pi pi-spin pi-spinner" style="font-size: 2rem; color: var(--climb-green-500)"></i>
     </div>
-    
+
     <table class="data-table" :class="{ 'loading-state': carregando }">
       <thead>
         <tr>
@@ -13,8 +13,18 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="item in valor" :key="item.id || Math.random()"> <td v-for="coluna in colunas" :key="coluna.campo + item.id">
-            {{ item[coluna.campo] }}
+        <tr v-for="item in valor" :key="item.id || Math.random()">
+          <td v-for="coluna in colunas" :key="coluna.campo + item.id">
+            <span
+              v-if="coluna.campo === 'status'"
+              class="status-pill"
+              :data-status="item[coluna.campo]?.toLowerCase()"
+            >
+              {{ item[coluna.campo] }}
+            </span>
+            <span v-else>
+              {{ item[coluna.campo] }}
+            </span>
           </td>
         </tr>
         <tr v-if="valor && valor.length === 0 && !carregando">
@@ -26,112 +36,106 @@
 </template>
 
 <script setup lang="ts">
-// Definição de props mais robusta
-interface Coluna {
-  campo: string;
-  titulo: string;
-}
-
-interface ItemTabela {
-  [key: string]: any; // Permite que os itens tenham qualquer propriedade
-}
-
-const props = defineProps<{ 
-  valor: ItemTabela[]; 
-  carregando?: boolean; 
-  colunas: Coluna[]; 
-}>()
+  interface Coluna {
+    campo: string
+    titulo: string
+  }
+  interface ItemTabela {
+    [key: string]: any
+  }
+  defineProps<{
+    valor: ItemTabela[]
+    carregando?: boolean
+    colunas: Coluna[]
+  }>()
 </script>
 
 <style scoped>
-.table-container {
-  position: relative; /* Para posicionar o overlay de carregamento */
-  overflow-x: auto; /* Garante que a tabela seja responsiva em telas pequenas */
-  border-radius: 8px; /* Adiciona bordas arredondadas ao container da tabela */
-  background-color: #ffffff; /* Fundo branco para a área da tabela */
-}
+  .table-container {
+    position: relative;
+    width: 100%;
+    overflow-x: auto;
+    background-color: transparent;
+  }
 
-.data-table {
-  width: 100%;
-  border-collapse: separate; /* Permite border-spacing */
-  border-spacing: 0; /* Remove espaço padrão */
-  font-size: 0.95rem;
-  color: #495057;
-  /* border: 1px solid #e0e6ed; */ /* Removi a borda externa para um visual mais limpo */
-}
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #123b2d;
+  }
 
-.data-table th, .data-table td {
-  padding: 1rem 1.25rem; /* Mais padding para um visual mais espaçoso */
-  text-align: left;
-  border-bottom: 1px solid #eff3f8; /* Bordas mais suaves entre as linhas */
-}
+  .data-table thead th {
+    text-align: left;
+    padding: 1rem 0;
+    color: #7a8d82;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid #e5e7eb;
+    white-space: nowrap;
+  }
 
-.data-table thead th {
-  background-color: #f8f9fa; /* Fundo levemente cinza para o cabeçalho */
-  font-weight: 600;
-  color: #344767; /* Cor mais escura para o texto do cabeçalho */
-  text-transform: uppercase;
-  font-size: 0.8rem;
-  letter-spacing: 0.05em;
-}
+  .data-table tbody td {
+    text-align: left;
+    padding: 1.25rem 0;
+    vertical-align: middle;
+    border-bottom: 1px solid #f3f4f6;
+    color: #374151;
+  }
 
-/* Bordas arredondadas para o cabeçalho */
-.data-table thead tr th:first-child {
-  border-top-left-radius: 8px;
-}
-.data-table thead tr th:last-child {
-  border-top-right-radius: 8px;
-}
+  .data-table tbody tr:last-child td {
+    border-bottom: none;
+  }
 
-.data-table tbody tr:hover {
-  background-color: #f2f7fb; /* Cor de fundo no hover para as linhas */
-}
+  .status-pill {
+    display: inline-block;
+    padding: 0.35rem 1rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-align: center;
+    background-color: #e5e7eb;
+    color: #374151;
+  }
 
-/* Estilo para a última linha (opcional) */
-.data-table tbody tr:last-child td {
-  border-bottom: none; 
-}
+  .status-pill[data-status='pendente'] {
+    background-color: #ccfbf1;
+    color: #115e59;
+  }
 
-.no-data {
-  text-align: center;
-  padding: 2rem;
-  color: #6c757d;
-  font-style: italic;
-}
+  .status-pill[data-status='ativo'],
+  .status-pill[data-status='concluído'] {
+    background-color: #d1fae5;
+    color: #065f46;
+  }
 
-/* Estado de carregamento */
-.loading-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(255, 255, 255, 0.7); /* Fundo semi-transparente */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  color: #344767;
-  z-index: 10;
-  border-radius: 8px;
-}
+  .status-pill[data-status='vencendo'],
+  .status-pill[data-status='cancelado'] {
+    background-color: #fee2e2;
+    color: #991b1b;
+  }
 
-.loading-state {
-  opacity: 0.7; /* Diminui a opacidade da tabela quando carregando */
-  pointer-events: none; /* Impede interações enquanto carrega */
-}
+  .no-data {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #9ca3af;
+    font-style: italic;
+  }
 
-/* Estilo básico do ícone de spinner do PrimeVue, se estiver usando */
-.pi-spin {
-    animation: pi-spin 2s infinite linear;
-}
-
-@keyframes pi-spin {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-}
+  .loading-overlay {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+  }
+  .loading-state {
+    opacity: 0.5;
+    pointer-events: none;
+  }
 </style>

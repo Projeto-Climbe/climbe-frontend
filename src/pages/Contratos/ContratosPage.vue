@@ -1,109 +1,182 @@
 <template>
-  <div class="contratos-page-container">
-    
-    <div class="page-header">
-      <h1 class="page-title">Contratos</h1>
-      <Button 
-        label="Criar Contrato" 
-        icon="pi pi-plus" 
-        class="btn-primaria" 
-        @click="modais.contrato = true" 
-      />
+  <div class="page-container">
+    <div class="section-card mb-card">
+      <div class="card-header">
+        <div class="header-left">
+          <h2 class="card-title">Contratos</h2>
+          <span class="card-subtitle">Pendentes de autorização</span>
+        </div>
+        <span class="badge-total">Total {{ contratosPendentes.length }}</span>
+      </div>
+
+      <TabelaDados :valor="contratosPendentes" :colunas="colunasContratos" />
     </div>
 
-    <div class="card-soft mt-4">
-      <TabelaDados 
-        :valor="contratosMock" 
-        :carregando="loading" 
-        :colunas="colunasContratos" 
-      />
-    </div>
-    
-    <ModalContrato
-      v-model="modais.contrato"
-      @enviar="salvarNovoContrato"
-    />
+    <div class="section-card">
+      <div class="card-header">
+        <div class="header-left">
+          <h2 class="card-title">Relatórios</h2>
+        </div>
 
+        <div class="header-actions">
+          <span class="badge-total mr-4">Total {{ relatoriosMock.length }}</span>
+
+          <Button
+            label="Adicionar novo relatório"
+            class="btn-primaria"
+            @click="modais.relatorio = true"
+          />
+        </div>
+      </div>
+
+      <TabelaDados :valor="relatoriosMock" :colunas="colunasRelatorios" />
+    </div>
+
+    <ModalContrato v-model="modais.contrato" @enviar="salvarNovoContrato" />
+
+    <ModalRelatorio v-model="modais.relatorio" @enviar="salvarNovoRelatorio" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import Button from 'primevue/button' 
-import TabelaDados from '@/components/core/TabelaDeDados.vue'
-import ModalContrato from '@/components/domain/Contratos/ModalContrato.vue' 
+  import { ref } from 'vue'
+  import Button from 'primevue/button'
+  import TabelaDados from '@/components/core/TabelaDeDados.vue'
+  import ModalContrato from '@/components/domain/Contratos/ModalContrato.vue'
+  // Importar o novo modal
+  import ModalRelatorio from '@/components/domain/Relatorios/ModalRelatorio.vue'
 
-interface ContratoData {
-  propostaId: number;
-  data_inicio: string; 
-  data_fim: string;
-  status: string;
-}
+  // Interfaces
+  interface ContratoData {
+    propostaId: number
+    data_inicio: string
+    data_fim: string
+    status: string
+  }
 
-const modais = ref({ contrato: false })
-const loading = ref(false)
-const contratosMock = ref([
-  { id: 1, nomeEmpresa: 'Tech Solutions', data_inicio: '01/01/2025', data_fim: '31/12/2025', status: 'Ativo' },
-  { id: 2, nomeEmpresa: 'Fila da Fruta', data_inicio: '11/033/2021', data_fim: '15/08/2025', status: 'Ativo' },
-  { id: 3, nomeEmpresa: 'Alpha Concusco', data_inicio: '10/03/2025', data_fim: '10/03/2026', status: 'Pendente' },
-])
-
-const colunasContratos = [
-  { campo: 'nomeEmpresa', titulo: 'Empresa (da Proposta)' },
-  { campo: 'data_inicio', titulo: 'Data de Início' },
-  { campo: 'data_fim', titulo: 'Data de Fim' },
-  { campo: 'status', titulo: 'Status' },
-]
-
-function salvarNovoContrato(payload: ContratoData) {
-  console.log('Salvando dados mockados:', payload)
-  
-  const nomeEmpresaMock = `Empresa da Proposta #${payload.propostaId}`
-  
-  contratosMock.value.push({
-    id: Math.random(),
-    nomeEmpresa: nomeEmpresaMock,
-    data_inicio: payload.data_inicio,
-    data_fim: payload.data_fim,
-    status: payload.status,
+  const modais = ref({
+    contrato: false,
+    relatorio: false, // Esta flag agora controla o ModalRelatorio
   })
 
-  modais.value.contrato = false
-}
+  // --- DADOS MOCKADOS ---
+  const contratosPendentes = ref([
+    { id: 1, nome: 'Jubileu do creio', email: 'omghihiihihihi@gmail.com', status: 'Pendente' },
+    { id: 2, nome: 'Jubileu do creio', email: 'omghihiihihihi@gmail.com', status: 'Pendente' },
+    { id: 3, nome: 'Jubileu do creio', email: 'omghihiihihihi@gmail.com', status: 'Pendente' },
+  ])
 
+  const colunasContratos = [
+    { campo: 'nome', titulo: 'Nome' },
+    { campo: 'email', titulo: 'Email' },
+    { campo: 'status', titulo: 'Status' },
+  ]
+
+  const relatoriosMock = ref([
+    {
+      id: 1,
+      nomeFantasia: 'Tech Solutions',
+      email: 'contato@techsolutions.com',
+      cnpj: '12.345.678/0001-99',
+      telefone: '(11) 98765-4321',
+    },
+    {
+      id: 2,
+      nomeFantasia: 'Tech Solutions',
+      email: 'contato@techsolutions.com',
+      cnpj: '12.345.678/0001-99',
+      telefone: '(11) 98765-4321',
+    },
+    {
+      id: 3,
+      nomeFantasia: 'Tech Solutions',
+      email: 'contato@techsolutions.com',
+      cnpj: '12.345.678/0001-99',
+      telefone: '(11) 98765-4321',
+    },
+  ])
+
+  const colunasRelatorios = [
+    { campo: 'nomeFantasia', titulo: 'Nome fantasia' },
+    { campo: 'email', titulo: 'Email' },
+    { campo: 'cnpj', titulo: 'Cnpj' },
+    { campo: 'telefone', titulo: 'Telefone' },
+  ]
+
+  // --- FUNÇÕES ---
+  function salvarNovoContrato(payload: ContratoData) {
+    console.log('Salvando contrato:', payload)
+    modais.value.contrato = false
+  }
+
+  function salvarNovoRelatorio(payload: any) {
+    // Adiciona na lista visualmente
+    relatoriosMock.value.push({
+      id: Math.random(), // ID temporário
+      ...payload,
+    })
+    modais.value.relatorio = false
+  }
 </script>
 
 <style scoped>
-.contratos-page-container {
-  padding: 2rem; 
-}
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-}
-.page-title {
-  font-size: 1.8rem;
-  color: #333;
-  font-weight: 600;
-}
-.btn-primaria {
-  background-color: #34d399; 
-  color: white;
-  border: none;
-  padding: 0.75rem 1.25rem;
-  border-radius: 8px;
-  font-weight: 600;
-  transition: background-color 0.2s;
-}
-.mt-4 {
-  margin-top: 1rem;
-}
-.card-soft {
-  padding: 1.5rem;
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-}
+  .page-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mb-card {
+    margin-bottom: 1.5rem;
+  }
+
+  .section-card {
+    background-color: #ffffff;
+    border-radius: 24px;
+    padding: 2rem;
+    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.04);
+  }
+
+  /* Headers */
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+  }
+
+  .header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+  }
+
+  /* Tipografia */
+  .card-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #123b2d;
+    margin: 0;
+  }
+
+  .card-subtitle {
+    font-size: 0.85rem;
+    color: #9ca3af;
+    font-weight: 500;
+  }
+
+  .badge-total {
+    font-size: 0.85rem;
+    color: #9ca3af;
+    font-weight: 600;
+  }
+
+  .mr-4 {
+    margin-right: 1rem;
+  }
 </style>

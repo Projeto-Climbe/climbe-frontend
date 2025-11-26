@@ -1,30 +1,27 @@
 :root {
-  /* Cores de fundo */
   --climb-bg: #f4faf6;
-  --climb-card-bg: #f6fbf7;
+  --climb-card-bg: #ffffff;
   --climb-sidebar-bg: #f2f6f3;
-
-  /* Cores principais */
   --climb-green-900: #123b2d;
   --climb-green-700: #1b7a5a;
   --climb-green-500: #2ca47a;
-
-  /* Cores auxiliares */
   --climb-muted: #7a8d82;
-  --climb-border-subtle: rgba(0, 0, 0, 0.04);
 
-  --climb-pill-red-bg: #ffe2e0;
-  --climb-pill-red-text: #b05454;
+  --climb-pill-red-bg: #fee2e2;
+  --climb-pill-red-text: #991b1b;
 
-  --climb-pill-blue-bg: #e0ebff;
-  --climb-pill-blue-text: #3b6ece;
+  --climb-pill-blue-bg: #e0f2fe;
+  --climb-pill-blue-text: #075985;
 
-  --climb-pill-green-bg: #d8f1e3;
-  --climb-pill-green-text: #2f8b5e;
+  --climb-pill-green-bg: #d1fae5;
+  --climb-pill-green-text: #065f46;
 
-  /* Outros */
+  --climb-input-bg: #eff3f4;
+  --climb-input-text: #374151;
+  --climb-radius-input: 12px;
+
   --climb-radius-card: 24px;
-  --climb-shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.08);
+  --climb-shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.04);
 }
 
 html,
@@ -32,16 +29,231 @@ body {
   margin: 0;
   padding: 0;
   font-family:
+    'Inter',
     system-ui,
     -apple-system,
-    BlinkMacSystemFont,
-    'SF Pro Text',
-    'Segoe UI',
     sans-serif;
   background-color: var(--climb-bg);
   color: var(--climb-green-900);
+  -webkit-font-smoothing: antialiased;
 }
 
-body {
-  -webkit-font-smoothing: antialiased;
+.p-inputtext,
+.p-inputtextarea,
+.input-clean {
+  background-color: var(--climb-input-bg) !important;
+  border: 1px solid transparent !important;
+  border-radius: var(--climb-radius-input) !important;
+  padding: 1rem 1.2rem !important;
+  color: var(--climb-green-900) !important;
+  font-size: 0.95rem !important;
+  transition: all 0.2s;
+  width: 100%;
+  box-shadow: none !important;
+}
+
+.p-inputtext::placeholder,
+.p-inputtextarea::placeholder {
+  color: #9ca3af;
+}
+
+.p-inputtext:enabled:focus,
+.p-inputtextarea:enabled:focus {
+  background-color: #ffffff !important;
+  outline: none !important;
+  border-color: #34d399 !important;
+  box-shadow: 0 0 0 2px rgba(52, 211, 153, 0.2) !important;
+}
+
+.input-with-icon-left {
+  position: relative;
+  width: 100%;
+}
+
+.input-with-icon-left i {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #4b5563;
+  z-index: 2;
+  pointer-events: none;
+  font-size: 1.1rem;
+}
+
+.input-with-icon-left .p-inputtext {
+  padding-left: 3rem !important;
+}
+
+
+.p-button {
+  border-radius: 12px !important;
+  font-weight: 600 !important;
+  padding: 0.75rem 1.5rem !important;
+  border: none !important;
+}
+
+.btn-primaria {
+  background: linear-gradient(90deg, #6ee7b7 0%, #34d399 100%) !important;
+  color: #064e3b !important;
+}
+
+.btn-primaria:hover {
+  opacity: 0.9;
+}
+
+.btn-soft-green {
+  background-color: #d8f1e3 !important;
+  color: #123b2d !important;
+  border: none !important;
+  font-weight: 700 !important;
+  padding: 0.875rem 2rem !important;
+}
+
+.btn-soft-green:hover {
+  background-color: #ccece0 !important;
+}
+
+.p-checkbox {
+  width: 24px;
+  height: 24px;
+}
+
+.p-checkbox .p-checkbox-box {
+  border-radius: 50% !important;
+  width: 24px;
+  height: 24px;
+  border: 2px solid #d1d5db !important;
+  background-color: transparent !important;
+  transition: all 0.2s;
+}
+
+.p-checkbox.p-checkbox-checked .p-checkbox-box {
+  background-color: #6b7280 !important; 
+  border-color: #6b7280 !important;
+}
+
+.p-checkbox .p-checkbox-icon {
+  font-size: 12px;
+  font-weight: bold;
+  color: white;
+}
+
+.p-dialog {
+  border-radius: 24px !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15) !important;
+  border: none !important;
+  background: #ffffff !important;
+}
+
+.p-dialog-header {
+  border-top-left-radius: 24px !important;
+  border-top-right-radius: 24px !important;
+  padding: 1.5rem 1.5rem 0.5rem 1.5rem !important;
+  background: transparent !important;
+}
+
+.p-dialog-content {
+  padding: 0 1.5rem 1.5rem 1.5rem !important;
+}
+
+.p-dialog-footer {
+  padding: 1rem 1.5rem 1.5rem !important;
+  border-bottom-left-radius: 24px !important;
+  border-bottom-right-radius: 24px !important;
+  background: transparent !important;
+}
+
+.p-datepicker,
+.p-dropdown-panel {
+  background-color: #ffffff !important;
+  border: none !important;
+  border-radius: 16px !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15) !important;
+  padding: 1rem !important;
+  margin-top: 12px !important;
+  font-family: inherit !important;
+}
+
+.p-datepicker .p-datepicker-header {
+  background: transparent !important;
+  border-bottom: none !important;
+  padding: 0 0 1rem 0 !important;
+  color: #123b2d !important;
+}
+
+.p-datepicker .p-datepicker-title {
+  font-weight: 600 !important;
+  font-size: 1rem !important;
+}
+
+.p-datepicker table th {
+  color: #6b7280 !important;
+  font-weight: 700 !important;
+  font-size: 0.85rem !important;
+  border-bottom: none !important;
+}
+
+.p-datepicker table td > span.p-highlight {
+  background-color: #34d399 !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(52, 211, 153, 0.4) !important;
+}
+
+.calendar-clean-icon-left,
+.p-calendar {
+  width: 100%;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  display: flex !important;
+  align-items: center;
+}
+
+.calendar-clean-icon-left .p-inputtext {
+  background-color: #f3f4f6 !important;
+  border: 1px solid transparent !important;
+  border-radius: 12px !important;
+  padding: 1.1rem 1.2rem 1.1rem 3.5rem !important;
+  font-size: 1rem !important;
+  color: #1f2937 !important;
+  width: 100%;
+  box-shadow: none !important;
+}
+
+.calendar-clean-icon-left .p-inputtext:enabled:focus {
+  background-color: #ffffff !important;
+  border-color: #34d399 !important;
+  box-shadow: 0 0 0 2px rgba(52, 211, 153, 0.2) !important;
+  outline: none !important;
+}
+
+.calendar-clean-icon-left .input-icon {
+  position: absolute;
+  left: 1.2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b7280;
+  z-index: 10;
+  pointer-events: none;
+  font-size: 1.2rem;
+}
+
+.badge-status {
+  padding: 0.4rem 1rem;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.bg-yellow {
+  background-color: #fef9c3 !important;
+  color: #a16207 !important;
+}
+
+.bg-green {
+  background-color: #d1fae5 !important;
+  color: #065f46 !important;
 }
