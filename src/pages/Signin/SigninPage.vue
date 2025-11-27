@@ -13,6 +13,12 @@
         <p class="signin-subtitle">Por favor, insira suas credenciais</p>
       </div>
 
+      <!-- Error Banner -->
+      <div v-if="errorMessage" class="error-banner">
+        <i class="pi pi-exclamation-triangle"></i>
+        <span>{{ errorMessage }}</span>
+      </div>
+
       <!-- Form Section -->
       <form @submit.prevent="handleSignin" class="signin-form">
         <!-- Username Field -->
@@ -47,7 +53,13 @@
         </a>
 
         <!-- Primary Button -->
-        <Button type="submit" label="Entrar" class="signin-btn-primary" />
+        <Button
+          type="submit"
+          label="Entrar"
+          class="signin-btn-primary"
+          :loading="loading"
+          :disabled="loading"
+        />
       </form>
 
       <!-- Divider -->
@@ -99,15 +111,41 @@
   import { useRouter } from 'vue-router'
   import { useToast } from 'primevue/usetoast'
   import PasswordResetModal from '@/components/core/PasswordResetModal.vue'
+  import { login } from '@/services/authService'
+import https from '@/services/https'
 
   const router = useRouter()
   const toast = useToast()
   const username = ref('')
   const password = ref('')
   const showPasswordResetModal = ref(false)
+  const loading = ref(false)
+  const errorMessage = ref<string | null>(null)
 
-  const handleSignin = () => {
-    router.push('/dashboard')
+  const handleSignin = async () => {
+    errorMessage.value = null
+
+    if (!username.value || !password.value) {
+      errorMessage.value = 'Preencha todos os campos'
+      return
+    }
+
+    loading.value = true
+
+    try {
+      const { token } = await login({
+        email: username.value,
+        password: password.value,
+      })
+
+      localStorage.setItem('token', token)
+      https.defaults.headers.common['Authorization'] = `Bearer ${token}`
+      router.push('/dashboard')
+    } catch (error: any) {
+      errorMessage.value = error.message || 'Erro ao fazer login'
+    } finally {
+      loading.value = false
+    }
   }
 
   const handleGoogleSignin = () => {
@@ -221,7 +259,6 @@
   /* Input Styling */
   .signin-input :deep(.p-inputtext),
   .signin-input :deep(.p-password-input) {
-    background: #eff5f1 !important;
     border-radius: 12px !important;
     border: none !important;
     padding: 12px 16px !important;
@@ -234,7 +271,7 @@
 
   .signin-input :deep(.p-inputtext::placeholder),
   .signin-input :deep(.p-password-input::placeholder) {
-    color: #6f7976 !important;
+    /* color: #6f7976 !important; */
   }
 
   .signin-input :deep(.p-inputtext:focus),
@@ -274,6 +311,22 @@
     font-size: 16px;
     font-weight: 600;
     color: #6f7976;
+  }
+
+  /* Error Banner */
+  .error-banner {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.875rem 1rem;
+    background-color: #fee2e2;
+    color: #991b1b;
+    border-radius: 12px;
+    font-size: 0.9rem;
+  }
+
+  .error-banner i {
+    font-size: 1.1rem;
   }
 
   /* Forgot Password Link */
