@@ -1,0 +1,310 @@
+<template>
+  <div class="signin-shell">
+    <!-- Logo Section -->
+    <div class="signin-logo">
+      <img src="/assets/images/climb_logo.svg" alt="Climbe" class="signin-logo__image" />
+    </div>
+
+    <div class="signin-card">
+
+      <!-- Header Section -->
+      <div class="signin-header">
+        <h1 class="signin-title">Bem vindo<br />de volta!</h1>
+        <p class="signin-subtitle">Por favor, insira suas credenciais</p>
+      </div>
+
+      <!-- Form Section -->
+      <form @submit.prevent="handleSignin" class="signin-form">
+        <!-- Username Field -->
+        <div class="form-field">
+          <label for="username" class="form-label">Seu nome de usuário</label>
+          <InputText
+            id="username"
+            v-model="username"
+            placeholder="Digite seu nome de usuário"
+            class="signin-input"
+            autocomplete="username"
+          />
+        </div>
+
+        <!-- Password Field -->
+        <div class="form-field">
+          <label for="password" class="form-label">Sua senha</label>
+          <Password
+            id="password"
+            v-model="password"
+            :feedback="false"
+            toggleMask
+            class="signin-input"
+            inputClass="signin-password-input"
+            autocomplete="current-password"
+          />
+        </div>
+
+        <!-- Forgot Password Link -->
+        <a href="#" @click.prevent="showPasswordResetModal = true" class="forgot-password-link">
+          Esqueceu a senha?
+        </a>
+
+        <!-- Primary Button -->
+        <Button type="submit" label="Entrar" class="signin-btn-primary" />
+      </form>
+
+      <!-- Divider -->
+      <div class="signin-divider">
+        <span class="divider-line"></span>
+        <span class="divider-text">ou</span>
+        <span class="divider-line"></span>
+      </div>
+
+      <!-- Google Button -->
+      <Button type="button" class="signin-btn-google" @click="handleGoogleSignin">
+        <template #icon>
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 48 48"
+            style="margin-right: 8px"
+            aria-hidden="true"
+          >
+            <path
+              fill="#EA4335"
+              d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"
+            />
+            <path
+              fill="#4285F4"
+              d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"
+            />
+            <path
+              fill="#FBBC05"
+              d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"
+            />
+            <path
+              fill="#34A853"
+              d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"
+            />
+          </svg>
+          Entrar com Google
+        </template>
+      </Button>
+    </div>
+
+    <!-- Password Reset Modal -->
+    <PasswordResetModal v-model="showPasswordResetModal" @success="handlePasswordResetSuccess" />
+  </div>
+</template>
+
+<script setup lang="ts">
+  import { ref } from 'vue'
+  import { useRouter } from 'vue-router'
+  import { useToast } from 'primevue/usetoast'
+  import PasswordResetModal from '@/components/core/PasswordResetModal.vue'
+
+  const router = useRouter()
+  const toast = useToast()
+  const username = ref('')
+  const password = ref('')
+  const showPasswordResetModal = ref(false)
+
+  const handleSignin = () => {
+    router.push('/dashboard')
+  }
+
+  const handleGoogleSignin = () => {
+    console.log('Google signin clicked')
+  }
+
+  const handlePasswordResetSuccess = () => {
+    showPasswordResetModal.value = false
+    toast.add({
+      severity: 'success',
+      summary: 'Senha redefinida',
+      detail: 'Sua senha foi redefinida com sucesso. Faça login com a nova senha.',
+      life: 5000,
+    })
+  }
+</script>
+
+<style scoped>
+  .signin-shell {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    align-items: center;
+    justify-content: center;
+    background: var(--climb-signin-bg);
+    padding: 2rem;
+  }
+
+  .signin-card {
+    background: var(--climb-signin-card-bg);
+    border: 2px solid var(--climb-signin-card-border);
+    border-radius: 32px;
+    padding: 32px;
+    max-width: 500px;
+    width: 100%;
+    box-shadow: 0 4px 16px rgba(222, 228, 224, 0.25);
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  /* Logo Section */
+  .signin-logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .signin-logo__image {
+    /* width: 204px; */
+  }
+
+  .signin-logo__text {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: #171d1b;
+    text-align: center;
+  }
+
+  /* Header Section */
+  .signin-header {
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    gap: 8px;
+    text-align: left;
+  }
+
+  .signin-title {
+    font-family: 'Roboto', sans-serif;
+    font-size: var(--climb-headline-large);
+    font-weight: 500;
+    line-height: 40px;
+    color: #171d1b;
+    margin: 0;
+  }
+
+  .signin-subtitle {
+    font-family: 'Roboto', sans-serif;
+    font-size: var(--climb-label-large);
+    font-weight: 500;
+    line-height: 20px;
+    color: #6f7976;
+    margin: 0;
+  }
+
+  /* Form Section */
+  .signin-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .form-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: #171d1b;
+    line-height: 21px;
+  }
+
+  /* Input Styling */
+  .signin-input :deep(.p-inputtext),
+  .signin-input :deep(.p-password-input) {
+    background: #eff5f1 !important;
+    border-radius: 12px !important;
+    border: none !important;
+    padding: 12px 16px !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 16px !important;
+    color: #171d1b !important;
+    width: 100%;
+    box-shadow: none !important;
+  }
+
+  .signin-input :deep(.p-inputtext::placeholder),
+  .signin-input :deep(.p-password-input::placeholder) {
+    color: #6f7976 !important;
+  }
+
+  .signin-input :deep(.p-inputtext:focus),
+  .signin-input :deep(.p-password-input:focus) {
+    outline: none !important;
+    border: none !important;
+    box-shadow: 0 0 0 2px rgba(160, 242, 222, 0.4) !important;
+  }
+
+  /* Password component wrapper */
+  .signin-input :deep(.p-password) {
+    width: 100%;
+  }
+
+  .signin-input :deep(.p-password-toggle-icon) {
+    color: #6f7976;
+  }
+
+  /* Divider */
+  .signin-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0;
+  }
+
+  .divider-line {
+    flex: 1;
+    height: 2px;
+    background: #bfc9c4;
+    opacity: 0.5;
+    border-radius: 30px;
+  }
+
+  .divider-text {
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #6f7976;
+  }
+
+  /* Forgot Password Link */
+  .forgot-password-link {
+    color: var(--climb-green-700);
+    font-size: 0.9rem;
+    text-decoration: none;
+    align-self: flex-end;
+    transition: color 0.2s;
+  }
+
+  .forgot-password-link:hover {
+    color: var(--climb-green-500);
+    text-decoration: underline;
+  }
+
+  /* Responsive */
+  @media (max-width: 640px) {
+    .signin-shell {
+      padding: 1rem;
+    }
+
+    .signin-card {
+      padding: 24px;
+      border-radius: 24px;
+      gap: 24px;
+    }
+
+    .signin-title {
+      font-size: 28px;
+      line-height: 36px;
+    }
+  }
+</style>

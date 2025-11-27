@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
+const PaginaSignin = () => import('../pages/Signin/SigninPage.vue')
 const PaginaDashboard = () => import('../pages/Dashboard/DashboardPage.vue')
 const PaginaEmpresas = () => import('../pages/Companies/CompaniesPage.vue')
 const PaginaReunioes = () => import('../pages/Reunioes/ReunioesPage.vue')
@@ -11,7 +12,8 @@ const PaginaVazia = { render: () => null }
 export default createRouter({
   history: createWebHistory(),
   routes: [
-    { path: '/', redirect: '/dashboard' },
+    { path: '/', redirect: '/signin' },
+    { path: '/signin', name: 'signin', component: PaginaSignin },
     { path: '/dashboard', name: 'dashboard', component: PaginaDashboard },
     { path: '/empresas', name: 'empresas', component: PaginaEmpresas },
     { path: '/contratos', name: 'contratos', component: PaginaContratos },
