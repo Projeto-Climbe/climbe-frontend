@@ -10,7 +10,7 @@ export interface CompanyData {
 
 export const getCompanies = async () => {
   try {
-    const response = await https.get('/api/empresa/'); 
+    const response = await https.get('/empresa/');
     return response.data;
   } catch (error: any) {
     console.error('Falha no companyService.getCompanies:', error);
@@ -26,8 +26,8 @@ export const getCompanies = async () => {
 
 export const createCompany = async (companyData: CompanyData) => {
   try {
-    const response = await https.post('/api/empresa/', companyData);
-    
+    const response = await https.post('/empresa/', companyData);
+
     return response.data;
 
   } catch (error: any) {

@@ -70,7 +70,13 @@
       </div>
 
       <!-- Google Button -->
-      <Button type="button" class="signin-btn-google" @click="handleGoogleSignin">
+      <Button
+        type="button"
+        class="signin-btn-google"
+        :loading="googleLoading"
+        :disabled="loading || googleLoading"
+        @click="handleGoogleSignin"
+      >
         <template #icon>
           <svg
             width="18"
@@ -111,8 +117,8 @@
   import { useRouter } from 'vue-router'
   import { useToast } from 'primevue/usetoast'
   import PasswordResetModal from '@/components/core/PasswordResetModal.vue'
-  import { login } from '@/services/authService'
-import https from '@/services/https'
+  import { getGoogleAuthUrl, login } from '@/services/authService'
+  import https from '@/services/https'
 
   const router = useRouter()
   const toast = useToast()
@@ -120,6 +126,7 @@ import https from '@/services/https'
   const password = ref('')
   const showPasswordResetModal = ref(false)
   const loading = ref(false)
+  const googleLoading = ref(false)
   const errorMessage = ref<string | null>(null)
 
   const handleSignin = async () => {
@@ -148,8 +155,17 @@ import https from '@/services/https'
     }
   }
 
-  const handleGoogleSignin = () => {
-    console.log('Google signin clicked')
+  const handleGoogleSignin = async () => {
+    errorMessage.value = null
+    googleLoading.value = true
+
+    try {
+      const authUrl = await getGoogleAuthUrl()
+      window.location.href = authUrl
+    } catch (error: any) {
+      errorMessage.value = error.message || 'Não foi possível iniciar o login com Google'
+      googleLoading.value = false
+    }
   }
 
   const handlePasswordResetSuccess = () => {

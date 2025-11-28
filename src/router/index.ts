@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 const PaginaSignin = () => import('../pages/Signin/SigninPage.vue')
+const PaginaGoogleCallback = () => import('../pages/Signin/GoogleCallbackPage.vue')
 const PaginaDashboard = () => import('../pages/Dashboard/DashboardPage.vue')
 const PaginaEmpresas = () => import('../pages/Companies/CompaniesPage.vue')
 const PaginaReunioes = () => import('../pages/Reunioes/ReunioesPage.vue')
@@ -14,6 +15,7 @@ export default createRouter({
   routes: [
     { path: '/', redirect: '/signin' },
     { path: '/signin', name: 'signin', component: PaginaSignin },
+    { path: '/auth/google/callback', name: 'google-callback', component: PaginaGoogleCallback },
     { path: '/dashboard', name: 'dashboard', component: PaginaDashboard },
     { path: '/empresas', name: 'empresas', component: PaginaEmpresas },
     { path: '/contratos', name: 'contratos', component: PaginaContratos },

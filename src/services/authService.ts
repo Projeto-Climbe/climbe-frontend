@@ -19,9 +19,24 @@ export interface ResetPasswordPayload {
   newPassword: string
 }
 
+export interface GoogleCallbackResponse {
+  success: boolean
+  pending: boolean
+  token?: string
+  user?: string
+  profile?: {
+    id: number
+    fullName: string
+    email: string
+    profilePicture: string
+    state: string
+  }
+  message?: string
+}
+
 export const login = async (payload: LoginPayload): Promise<LoginResponse> => {
   try {
-    const response = await https.post('/api/auth/login', payload)
+    const response = await https.post('/auth/login', payload)
     return response.data
   } catch (error: any) {
     if (error.message === 'Aguardando aprovação') {
@@ -65,4 +80,39 @@ export const resetPassword = async (payload: ResetPasswordPayload) => {
       throw new Error(error.message)
     }
   }
+}
+
+export const getGoogleAuthUrl = async (state?: string): Promise<string> => {
+  const fallbackUrl = `${https.defaults.baseURL}auth/google${
+    state ? `?state=${encodeURIComponent(state)}` : ''
+  }`
+
+  try {
+    const response = await https.get('/auth/google', {
+      params: state ? { state } : undefined,
+    })
+
+    if (response.data?.url) {
+      return response.data.url
+    }
+
+    return fallbackUrl
+  } catch (error) {
+    console.warn('Falha ao obter URL do Google, usando fallback.', error)
+    return fallbackUrl
+  }
+}
+
+export const completeGoogleSignin = async (
+  code: string,
+  state?: string,
+): Promise<GoogleCallbackResponse> => {
+  const response = await https.get('/auth/google/callback', {
+    params: {
+      code,
+      state,
+    },
+  })
+
+  return response.data
 }
