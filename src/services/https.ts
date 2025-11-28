@@ -2,7 +2,7 @@
 
 import axios from 'axios';
 const https = axios.create({
-  baseURL: 'http://localhost:3000' 
+  baseURL: 'https://climbe-api.fluxiaapp.com.br/api/'
 });
 
 export default https;

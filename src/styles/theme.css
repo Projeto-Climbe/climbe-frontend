@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600&display=swap');
+
 :root {
   --climb-bg: #f4faf6;
   --climb-card-bg: #ffffff;
@@ -22,6 +24,18 @@
 
   --climb-radius-card: 24px;
   --climb-shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.04);
+
+  /* Signin colors */
+  --climb-signin-bg: #f5fbf7;
+  --climb-signin-card-bg: #ffffff;
+  --climb-signin-card-border: #e9efec;
+  --climb-primary-container: #a0f2de;
+  --climb-on-primary: #005144;
+  --climb-outline: #6f7976;
+
+  /* Typography */
+  --climb-headline-large: 32px;
+  --climb-label-large: 14px;
 }
 
 html,
@@ -256,4 +270,27 @@ body {
 .bg-green {
   background-color: #d1fae5 !important;
   color: #065f46 !important;
+}
+
+/* Signin button styles */
+.signin-btn-primary {
+  background: var(--climb-primary-container) !important;
+  color: var(--climb-on-primary) !important;
+  width: 100%;
+  padding: 14px !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  border-radius: 14px !important;
+  border: none !important;
+}
+
+.signin-btn-google {
+  width: 100%;
+  border: 2px solid var(--climb-on-primary) !important;
+  background: transparent !important;
+  color: var(--climb-on-primary) !important;
+  padding: 10px !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  border-radius: 14px !important;
 }
