@@ -18,6 +18,9 @@ import EstruturaApp from './components/layout/EstruturaApp.vue'
 
 const route = useRoute()
 const isAuthRoute = computed(
-  () => route.path === '/signin' || route.path === '/auth/google/callback',
+  () =>
+    route.path === '/signin' ||
+    route.path === '/signup' ||
+    route.path === '/auth/google/callback',
 )
 </script>
