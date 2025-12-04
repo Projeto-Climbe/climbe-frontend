@@ -9,6 +9,18 @@ export interface LoginResponse {
   token: string
 }
 
+export interface SignupPayload {
+  fullName: string
+  email: string
+  password: string
+  cpf: string
+  phone: string
+}
+
+export interface SignupResponse {
+  message?: string
+}
+
 export interface RequestPasswordResetPayload {
   email: string
 }
@@ -43,6 +55,18 @@ export const login = async (payload: LoginPayload): Promise<LoginResponse> => {
       throw error
     }
     throw new Error('E-mail ou senha inválidos')
+  }
+}
+
+export const signup = async (payload: SignupPayload): Promise<SignupResponse> => {
+  try {
+    const response = await https.post('/auth/signup', payload)
+    return response.data
+  } catch (error: any) {
+    if (error.response?.data?.message) {
+      throw new Error(error.response.data.message)
+    }
+    throw new Error('Erro ao criar conta. Tente novamente.')
   }
 }
 

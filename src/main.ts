@@ -21,6 +21,7 @@ import Tag from 'primevue/tag'
 import Toast from 'primevue/toast'
 import ConfirmDialog from 'primevue/confirmdialog'
 import Ripple from 'primevue/ripple'
+import { vMaska } from 'maska/vue'
 
 const app = createApp(App)
 app.use(createPinia())
@@ -29,6 +30,7 @@ app.use(PrimeVue, { ripple: true })
 app.use(ToastService)
 app.use(ConfirmationService)
 app.directive('ripple', Ripple)
+app.directive('maska', vMaska)
 
 app.component('Button', Button)
 app.component('Dialog', Dialog)

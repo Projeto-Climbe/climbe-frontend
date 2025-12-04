@@ -13,6 +13,12 @@
         <p class="signin-subtitle">Por favor, insira suas credenciais</p>
       </div>
 
+      <!-- Success Banner -->
+      <div v-if="showSuccessMessage" class="success-banner">
+        <i class="pi pi-check-circle"></i>
+        <span>Conta Criada com sucesso! Aguarde seu cadastro ser aprovado.</span>
+      </div>
+
       <!-- Error Banner -->
       <div v-if="errorMessage" class="error-banner">
         <i class="pi pi-exclamation-triangle"></i>
@@ -105,6 +111,12 @@
           Entrar com Google
         </template>
       </Button>
+
+      <!-- Don't have account link -->
+      <div class="signup-signin-link">
+        <span class="link-text">Não tem uma conta?</span>
+        <router-link to="/signup" class="link-action">Criar conta</router-link>
+      </div>
     </div>
 
     <!-- Password Reset Modal -->
@@ -113,15 +125,17 @@
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue'
-  import { useRouter } from 'vue-router'
+  import { ref, computed } from 'vue'
+  import { useRouter, useRoute } from 'vue-router'
   import { useToast } from 'primevue/usetoast'
   import PasswordResetModal from '@/components/core/PasswordResetModal.vue'
   import { getGoogleAuthUrl, login } from '@/services/authService'
   import https from '@/services/https'
 
   const router = useRouter()
+  const route = useRoute()
   const toast = useToast()
+  const showSuccessMessage = computed(() => route.query.registered === 'true')
   const username = ref('')
   const password = ref('')
   const showPasswordResetModal = ref(false)
@@ -300,10 +314,29 @@
   /* Password component wrapper */
   .signin-input :deep(.p-password) {
     width: 100%;
+    position: relative;
   }
 
   .signin-input :deep(.p-password-toggle-icon) {
     color: #6f7976;
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .signin-input :deep(.p-password .p-icon-field-right) {
+    position: absolute;
+    top: 50%;
+    right: 0.75rem;
+    margin-top: -0.5rem;
+  }
+
+  .signin-input :deep(.p-password .p-input-icon) {
+    position: absolute;
+    top: 50%;
+    right: 1rem;
+    margin-top: -0.5rem;
+    color: #6f7976;
+    cursor: pointer;
   }
 
   /* Divider */
@@ -329,6 +362,22 @@
     color: #6f7976;
   }
 
+  /* Success Banner */
+  .success-banner {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.875rem 1rem;
+    background-color: #d1fae5;
+    color: #065f46;
+    border-radius: 12px;
+    font-size: 0.9rem;
+  }
+
+  .success-banner i {
+    font-size: 1.1rem;
+  }
+
   /* Error Banner */
   .error-banner {
     display: flex;
@@ -343,6 +392,34 @@
 
   .error-banner i {
     font-size: 1.1rem;
+  }
+
+  /* Signup/Signin Link */
+  .signup-signin-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--climb-signin-card-border);
+  }
+
+  .link-text {
+    font-size: 0.9rem;
+    color: var(--climb-outline);
+  }
+
+  .link-action {
+    font-size: 0.9rem;
+    color: var(--climb-green-700);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s;
+  }
+
+  .link-action:hover {
+    color: var(--climb-green-500);
+    text-decoration: underline;
   }
 
   /* Forgot Password Link */
